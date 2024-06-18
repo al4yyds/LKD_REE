@@ -5,39 +5,43 @@
   background-color: #ffffff;
   text-align: center;
   margin: 0 auto; /* 居中顯示 */
-  font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif;
+  font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
 }
 
 .rank-title {
   font-size: 36px;
   margin-bottom: 20px;
   color: #333;
-  font-family: 'Noto Sans TC','Microsoft JhengHei',sans-serif;
 }
 
 .rank-subtitle {
   font-size: 18px;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
   color: #555;
 }
 
 .product-rankings {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap; /* 確保在小屏幕上也能正常顯示 */
+  justify-content: space-between; /* 水平排列 */
+  align-items: flex-start; /* 確保所有區塊頂部對齊 */
   gap: 20px; /* 增加卡片之間的間距 */
+  flex-wrap: nowrap; /* 避免換行 */
 }
 
 .product-ranking {
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 300px; /* 固定每個卡片的最大寬度 */
-  margin: 10px auto; /* 確保卡片在小屏幕上居中 */
+  flex: 1; /* 確保每個區塊均分寬度 */
+  min-width: 0; /* 避免區塊寬度超出父容器 */
+  max-width: 33%; /* 限制區塊最大寬度 */
+  max-height: 600px; /* 限制區塊最大高度 */
   transition: transform 0.3s, box-shadow 0.3s;
   text-align: left;
   padding: 20px;
+  box-sizing: border-box; /* 確保padding在計算寬度時不會溢出 */
+  display: flex;
+  flex-direction: column; /* 確保內容垂直排列 */
 }
 
 .product-ranking:hover {
@@ -45,7 +49,7 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.product-ranking h2 {
+.city-title {
   text-align: center;
   margin-bottom: 20px;
   color: #ff6f61;
@@ -57,18 +61,24 @@
 .product-ranking ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
+  flex-grow: 1; /* 確保ul擴展以填滿剩餘空間 */
+  display: flex;
+  flex-direction: column; /* 確保li垂直排列 */
 }
 
 .product-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
+  padding: 10px;
   background-color: #ffffff;
   border: 1px solid #ddd;
   border-radius: 5px;
   margin-bottom: 10px;
   transition: background-color 0.3s ease, transform 0.3s;
+  box-sizing: border-box; /* 確保padding在計算寬度時不會溢出 */
+  height: auto; /* 讓高度自適應內容 */
+  min-height: 120px; /* 設定最小高度 */
 }
 
 .product-item:hover {
@@ -88,21 +98,31 @@
   text-align: left;
   color: #555;
   font-size: 15px;
+  word-wrap: break-word; /* 確保文字在超出範圍時自動換行 */
+  white-space: nowrap; /* 禁止文本換行 */
+  overflow: hidden; /* 隱藏溢出的文本 */
+  text-overflow: ellipsis; /* 使用省略號表示溢出的文本 */
 }
 
 .description {
   font-size: 12px;
-  color: #ff6f61;
+  color: #999;
+  word-wrap: break-word; /* 確保文字在超出範圍時自動換行 */
+  margin-top: 5px; /* 增加描述文字與標題之間的距離 */
+  white-space: nowrap; /* 禁止文本換行 */
+  overflow: hidden; /* 隱藏溢出的文本 */
+  text-overflow: ellipsis; /* 使用省略號表示溢出的文本 */
 }
 
 .activity-image {
-  width: 120px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 5px;
 }
 
 .image-container {
   position: relative;
+  margin-right: 10px;
 }
 
 .rank-overlay {
@@ -114,6 +134,14 @@
   padding: 5px 5px;
   border-radius: 5px;
   font-size: 12px;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 在商品信息內分配空間 */
+  height: 100%;
+  width: calc(100% - 100px); /* 確保文字部分不會超過圖片 */
 }
 
 .body {

@@ -58,7 +58,7 @@ const Rank = () => {
     }, {});
 
     // 轉換分組結果並只取前四個分組
-    return Object.values(grouped).slice(0, 4);
+    return Object.values(grouped).slice(0, 3);
   };
 
   // 如果正在加載，顯示加載指示器
@@ -94,12 +94,12 @@ const Rank = () => {
           // 遍歷排名列表並渲染每個分組
           ranklists.map((ranklist, index) => (
             <div key={index} className="product-ranking">
-              <h2>
+              <h2 className="city-title">
                 Top {index + 1}: {ranklist.cityName}
               </h2>
               <ul>
                 {ranklist.activities
-                  .slice(0, 4)
+                  .slice(0, 3)
                   .map((product, productIndex) => (
                     <li key={product.activityId} className="product-item">
                       {product.albums && product.albums.length > 0 && (
@@ -114,13 +114,12 @@ const Rank = () => {
                           </span>
                         </div>
                       )}
-                      <span className="name">
-                        {product.name}
-                        <br />
+                      <div className="product-info">
+                        <span className="name">{product.name}</span>
                         <span className="description">
                           {product.description}
                         </span>
-                      </span>
+                      </div>
                       {/* <span className="booking-count">{product.bookingCount} bookings</span> */}
                     </li>
                   ))}

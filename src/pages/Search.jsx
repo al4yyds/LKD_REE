@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import FilterSidebar from "../componentsJSX/FilterSidebar";
 import SearchResults from "../componentsJSX/SearchResults";
-import "./Search.scss";
+import "./Search.css";
 import backgroundImage from "../assets/images/contact/sectionBG.jpg";
 
 const Search = () => {
