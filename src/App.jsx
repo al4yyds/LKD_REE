@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import LoginForm from "./componentsJSX/LoginForm";
 import RootLayout from "./componentsJSX/RootLayout";
 import Search from "./pages/Search";
 import Favorite from "./pages/Favorite";
@@ -19,7 +20,7 @@ const App = () => {
           <Route path="/favorite" element={<Favorite />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginForm />} />
           <Route path="/search" element={<Search />} />
           <Route path="/productpage/:id" element={<ProductPage />} />
         </Route>

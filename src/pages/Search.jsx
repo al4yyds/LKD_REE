@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import FilterSidebar from "../componentsJSX/FilterSidebar";
+import SidebarV2 from "../componentsJSX/SidebarV2";
 import SearchResults from "../componentsJSX/SearchResults";
 import "./Search.css";
 import backgroundImage from "../assets/images/contact/sectionBG.jpg";
@@ -126,9 +126,9 @@ const Search = () => {
       const matchesQuery = query
         ? item.title.includes(query) || item.description.includes(query)
         : true;
-      const matchesFilters = Object.keys(filters).every((filterKey) => {
-        return filters[filterKey].includes(item[filterKey]);
-      });
+      const matchesFilters = Object.keys(filters).every((filterKey) =>
+        filters[filterKey].includes(item[filterKey])
+      );
       return matchesQuery && matchesFilters;
     });
 
@@ -152,7 +152,7 @@ const Search = () => {
         </div>
       </header>
       <div className="search-content">
-        <FilterSidebar setFilters={setFilters} />
+        <SidebarV2 setFilters={setFilters} />
         <div className="search-results-wrapper">
           <div className="search-controls">
             <span>找到 {results.length} 項結果</span>
@@ -169,13 +169,15 @@ const Search = () => {
             </div>
           </div>
           <div className="search-results-container">
-            {results.length === 0 ? (
-              <div className="no-results">
-                <p>搜索結果為 0，請重新搜索。</p>
-              </div>
-            ) : (
-              <SearchResults results={results} />
-            )}
+            <div className="search-results-parent">
+              {results.length === 0 ? (
+                <div className="no-results">
+                  <p>搜索結果為 0，請重新搜索。</p>
+                </div>
+              ) : (
+                <SearchResults results={results} />
+              )}
+            </div>
           </div>
         </div>
       </div>
