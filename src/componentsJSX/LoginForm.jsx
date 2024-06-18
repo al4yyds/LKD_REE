@@ -1,7 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import "./LoginForm.css";
+import axios from "axios";
+import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const LoginForm = ({ show, onClose }) => {
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({
+    reg: {
+      Name: "",
+      Email: "",
+      Password: "",
+    },
+    sign: {
+      Email: "",
+      Password: "",
+    },
+  });
+  const [loading, setLoading] = useState(false);
+  const handleChangeForm = (e, regOrSign) => {
+    const { name, value } = e.target;
+    regOrSign == "reg"
+      ? setForm({
+          ...form,
+          reg: {
+            ...form.reg,
+            [name]: value,
+          },
+        })
+      : setForm({
+          ...form,
+          sign: {
+            ...form.sign,
+            [name]: value,
+          },
+        });
+  };
+  console.log("formformform", form);
   const containerRef = React.useRef(null);
 
   const handleRegisterClick = () => {
@@ -15,7 +55,69 @@ const LoginForm = ({ show, onClose }) => {
   if (!show) {
     return null;
   }
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    // 定義要發送的 GET 請求的 URL
+    // https://localhost:7095/LogIn/pwdcheck/?email=shaw@gmail.com&password=Aa111111
+    const url = "https://localhost:7095/LogIn/pwdcheck";
 
+    // 定義查詢參數
+    const params = {
+      email: form.sign.Email,
+      password: form.sign.Password,
+    };
+
+    // 發送 GET 請求並傳遞查詢參數
+    axios
+      .post(
+        `https://localhost:7095/LogIn/pwdcheck/?email=${form.sign.Email}&password=${form.sign.Password}`
+      )
+      .then((response) => {
+        // 處理成功的響應
+        console.log(response.data);
+        setLoading(false);
+        onClose(); //關閉視窗
+        setOpen(true); //提醒成功
+      })
+      .catch((error) => {
+        // 處理錯誤
+        console.error("發送請求時發生錯誤：", error);
+      });
+  };
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    // 定義要發送的 GET 請求的 URL
+    // https://localhost:7095/LogIn/register
+    const url = "https://localhost:7095/LogIn/register";
+
+    // 定義查詢參數
+    const params = {
+      name: form.reg.Name,
+      email: form.reg.Email,
+      password: form.reg.Password,
+    };
+
+    // 發送 GET 請求並傳遞查詢參數
+    axios
+      .post(
+        // url,
+        // { param: params }
+        `https://localhost:7095/LogIn/register/?Username=${form.reg.Name}&Email=${form.reg.Email}&Password=${form.reg.Password}`
+      )
+      .then((response) => {
+        // 處理成功的響應
+        console.log(response.data);
+      })
+      .catch((error) => {
+        // 處理錯誤
+        console.error("發送請求時發生錯誤：", error);
+      });
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  console.log("loading", loading);
   return (
     <div className="login-form">
       <div className="modal-overlay" onClick={onClose}></div>
@@ -38,10 +140,32 @@ const LoginForm = ({ show, onClose }) => {
               </a>
             </div>
             <span>or use your email for registration</span>
-            <input type="text" placeholder="Name" />
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <button>Sign Up</button>
+            <input
+              type="text"
+              placeholder="Name"
+              value={form.reg.Name}
+              name="Name"
+              onChange={(e) => handleChangeForm(e, "reg")}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={form.reg.Email}
+              name="Email"
+              onChange={(e) => handleChangeForm(e, "reg")}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={form.reg.Password}
+              name="Password"
+              onChange={(e) => handleChangeForm(e, "reg")}
+            />
+            {loading ? (
+              <button onClick={(e) => handleSignUp(e, "reg")}>登入</button>
+            ) : (
+              <LoadingButton></LoadingButton>
+            )}
           </form>
         </div>
         <div className="form-container sign-in">
@@ -62,10 +186,25 @@ const LoginForm = ({ show, onClose }) => {
               </a>
             </div>
             <span>or use your email password</span>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={form.sign.Email}
+              name="Email"
+              onChange={(e) => handleChangeForm(e, "sign")}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={form.sign.Password}
+              name="Password"
+              onChange={(e) => handleChangeForm(e, "sign")}
+            />
             <a href="#">Forget Your Password?</a>
-            <button>Sign In</button>
+            <button onClick={(e) => handleLogin(e, "sign")}>
+              {loading ? "登入中" : "登入"}
+            </button>
+            {/* <button onClick={(e) => handleLogin(e)}>Sign In</button> */}
           </form>
         </div>
         <div className="toggle-container">
@@ -96,6 +235,26 @@ const LoginForm = ({ show, onClose }) => {
           </div>
         </div>
       </div>
+      {/* <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Use Google's location service?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            成功登入
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} autoFocus>
+            確認
+          </Button>
+        </DialogActions>
+      </Dialog> */}
     </div>
   );
 };
