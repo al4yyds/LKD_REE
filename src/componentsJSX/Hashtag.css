@@ -1,0 +1,12 @@
+/* HashtagTag.css */
+
+.hashtag-tag {
+    display: inline-block;
+    background-color: #f2f2f2; /* 灰色背景 */
+    color: #666666; /* 文字颜色 */
+    font-size: 12px; /* 字体大小 */
+    padding: 4px 8px; /* 内边距 */
+    margin-right: 8px; /* 右侧间距 */
+    border-radius: 4px; /* 圆角 */
+  }
+  

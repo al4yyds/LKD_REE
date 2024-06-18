@@ -1,0 +1,14 @@
+.photo-desc-item {
+    margin-bottom: 20px; /* 可根据需要调整间距 */
+  }
+  
+  .photo-description {
+    margin-left: 10px; /* 调整黑点与描述文本的距离 */
+  }
+  
+  .photo-description::before {
+    content: "●"; /* 使用Unicode字符表示黑点 */
+    display: inline-block;
+    margin-right: 5px; /* 调整黑点与文本之间的距离 */
+  }
+  
