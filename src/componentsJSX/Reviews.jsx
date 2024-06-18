@@ -9,8 +9,8 @@ const Reviews = ({ reviews }) => {
           <i className="reviews-icon">★</i>
           <h2>評論</h2>
         </div>
-        <div className="reviews-score">4.5</div>
-        <div className="total-reviews">(200 reviews)</div>
+        {/* <div className="reviews-score">4.5</div> */}
+        <div className="total-reviews">(179 reviews)</div>
       </div>
       <div className="reviews-content">
         <div className="review-filters">

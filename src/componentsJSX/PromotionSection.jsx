@@ -7,7 +7,7 @@ const PromotionSection = () => {
   useEffect(() => {
     // 加載活動資料的異步函數
     const loadPromotions = async () => {
-      const url = "https://localhost:7090/api/Activities"; // API 端點
+      const url = "https://localhost:7148/api/HotActivities"; // API 端點
 
       try {
         const response = await fetch(url, {

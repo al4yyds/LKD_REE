@@ -6,9 +6,9 @@ const Area = () => {
   const navigate = useNavigate();
 
   const areas = [
-    { id: 1, name: "臺北", imageUrl: "/src/assets/images/areas/taipei.jpg" },
-    { id: 2, name: "臺中", imageUrl: "/src/assets/images/areas/taichung.jpg" },
-    { id: 3, name: "臺南", imageUrl: "/src/assets/images/areas/tainan.jpg" },
+    { id: 1, name: "台北", imageUrl: "/src/assets/images/areas/taipei.jpg" },
+    { id: 2, name: "台中", imageUrl: "/src/assets/images/areas/taichung.jpg" },
+    { id: 3, name: "台南", imageUrl: "/src/assets/images/areas/tainan.jpg" },
     { id: 4, name: "高雄", imageUrl: "/src/assets/images/areas/kaohsiung.jpg" },
     { id: 5, name: "宜蘭", imageUrl: "/src/assets/images/areas/yilan.jpg" },
     { id: 6, name: "花蓮", imageUrl: "/src/assets/images/areas/hualien.jpg" },

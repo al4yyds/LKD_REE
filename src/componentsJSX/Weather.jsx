@@ -12,7 +12,7 @@ const Weather = () => {
     const fetchData = async () => {
       try {
         // 從API獲取天氣數據
-        const response = await fetch("https://localhost:7090/api/Weather");
+        const response = await fetch("https://localhost:7148/api/Weather");
         const data = await response.json();
         // 更新狀態變量
         setWeatherData(data);
