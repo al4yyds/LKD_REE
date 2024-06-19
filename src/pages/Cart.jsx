@@ -1,3 +1,4 @@
+import Booking from "../componentsJSX/Booking";
 import GridPic from "../componentsJSX/GridPic";
 import Introduction from "../componentsJSX/Introduction";
 import ProInfo from "../componentsJSX/ProInfo";
@@ -7,6 +8,8 @@ import Reviews from "../componentsJSX/Reviews";
 const Cart = () => {
   return (
     <div>
+      <Booking />
+
       <ProductSearchBar />
       <GridPic />
       <ProInfo />
