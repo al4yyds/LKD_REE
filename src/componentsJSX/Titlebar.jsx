@@ -55,7 +55,7 @@ const Titlebar = () => {
             <button className="titlebar-button">收藏</button>
           </Link>
           <Link to="/register">
-            <button className="titlebar-button">最近逛過</button>
+            <button className="titlebar-button">最近逛過11</button>
           </Link>
           <button className="titlebar-button" onClick={handleOpenModal}>
             登入
