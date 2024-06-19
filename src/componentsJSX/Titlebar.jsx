@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Titlebar.css";
 import logo from "../assets/Logo.png"; // 確保你有一個 logo.png 文件在對應的路徑
 import LoginForm from "./LoginForm"; // 引入 LoginForm 組件
+import { colors } from "@mui/material";
 
 const Titlebar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false); // 添加狀態來控制模態框顯示
+  const [isLogin, setLoginin] = useState("");
   const navigate = useNavigate();
 
   const handleSearchKeyDown = (event) => {
@@ -26,6 +28,14 @@ const Titlebar = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+  useEffect(() => {
+    //expire  username
+    const loginExpire = localStorage.getItem("expire");
+    const loginUsername = localStorage.getItem("name");
+    const now = Date.now();
+    loginExpire > now ? setLoginin(loginUsername) : setLoginin("");
+    console.log("loginExpireloginExpire", loginExpire, loginUsername);
+  }, []);
 
   return (
     <div className="titlebar-container">
@@ -57,9 +67,13 @@ const Titlebar = () => {
           <Link to="/register">
             <button className="titlebar-button">最近逛過</button>
           </Link>
-          <button className="titlebar-button" onClick={handleOpenModal}>
-            登入
-          </button>
+          {isLogin ? (
+            <span style={{ color: "blue" }}>{isLogin}</span>
+          ) : (
+            <button className="titlebar-button" onClick={handleOpenModal}>
+              登入
+            </button>
+          )}
         </div>
       </div>
       <LoginForm show={showModal} onClose={handleCloseModal} />
