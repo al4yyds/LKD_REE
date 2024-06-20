@@ -11,6 +11,7 @@ import { jwtDecode } from "jwt-decode";
 import Auth_JWT from "../../Auth_JWT";
 import fb from "../assets/images/icons/fb.png";
 import github from "../assets/images/icons/github.png";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const LoginForm = ({ show, onClose }) => {
   const [open, setOpen] = useState(false);
@@ -26,6 +27,8 @@ const LoginForm = ({ show, onClose }) => {
     },
   });
   const [loading, setLoading] = useState(false);
+  const [passwordType, setPasswordType_] = useState("password");
+
   const handleChangeForm = (e, regOrSign) => {
     const { name, value } = e.target;
     regOrSign == "reg"
@@ -49,10 +52,12 @@ const LoginForm = ({ show, onClose }) => {
 
   const handleRegisterClick = () => {
     containerRef.current.classList.add("active");
+    setPasswordType_("password");
   };
 
   const handleLoginClick = () => {
     containerRef.current.classList.remove("active");
+    setPasswordType_("password");
   };
 
   if (!show) {
@@ -69,14 +74,15 @@ const LoginForm = ({ show, onClose }) => {
 
     // 定義查詢參數
     const params = {
-      email: form.sign.Email,
+      username: form.sign.Email,
       password: form.sign.Password,
     };
 
     // 發送 GET 請求並傳遞查詢參數
     axios
       .post(
-        `https://localhost:7148/api/LoginJWT/Log-in/?email=${form.sign.Email}&password=${form.sign.Password}`
+        `https://localhost:7148/api/LoginJWT/Log-in-Hash`,
+        params
         //`https://localhost:7095/LogIn/pwdcheck/?email=${form.sign.Email}&password=${form.sign.Password}`
       )
       .then((response) => {
@@ -102,7 +108,7 @@ const LoginForm = ({ show, onClose }) => {
 
     // 定義查詢參數
     const params = {
-      name: form.reg.Name,
+      username: form.reg.Name,
       email: form.reg.Email,
       password: form.reg.Password,
     };
@@ -113,13 +119,30 @@ const LoginForm = ({ show, onClose }) => {
         // url,
         // { param: params }
         //`https://localhost:7095/LogIn/register/?Username=${form.reg.Name}&Email=${form.reg.Email}&Password=${form.reg.Password}`
-        `https://localhost:7148/api/LoginJWT/sign-up/Username=${form.reg.Name}&Email=${form.reg.Email}&Password=${form.reg.Password}?`
+        `https://localhost:7148/api/LoginJWT/sign-up`,
+        params
       )
       .then((response) => {
-        // 處理成功的響應
-        Auth_JWT.registerAndLogin({ name: form.reg.Name });
-        window.location.reload();
-        console.log(response.data);
+        // 發送 GET 請求並傳遞查詢參數
+        axios
+          .post(
+            `https://localhost:7148/api/LoginJWT/Log-in-Hash`,
+            params
+            //`https://localhost:7095/LogIn/pwdcheck/?email=${form.sign.Email}&password=${form.sign.Password}`
+          )
+          .then((response) => {
+            Auth_JWT.login(response.data.token);
+            // 處理成功的響應
+            // console.log(response.data);
+            setLoading(false);
+            onClose(); //關閉視窗
+            setOpen(true); //提醒成功
+            window.location.reload();
+          })
+          .catch((error) => {
+            // 處理錯誤
+            console.error("發送請求時發生錯誤：", error);
+          });
       })
       .catch((error) => {
         // 處理錯誤
@@ -150,29 +173,40 @@ const LoginForm = ({ show, onClose }) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const setPasswordType = () => {
+    // passwordType, setPasswordType_
+    if (passwordType === "password") {
+      setPasswordType_("text");
+    } else {
+      setPasswordType_("password");
+    }
+  };
+  const onChange = (value) => {
+    console.log("Captcha value:", value);
+  };
   console.log("loading", loading);
   return (
     <div className="login-form">
       <div className="modal-overlay" onClick={onClose}></div>
       <div className="container" id="container" ref={containerRef}>
         <div className="form-container sign-up">
-          <form>
+          <form onSubmit={(e) => handleSignUp(e, "reg")}>
             <h1>建立帳號</h1>
             <div className="social-icons">
               <GoogleOAuthProvider clientId="191234775662-mda3goonrsk2g68bu3dknkpkgrh34431.apps.googleusercontent.com">
                 <GoogleLogin
                   onSuccess={(credentialResponse) => {
                     // setUser(jwtDecode(credentialResponse.credential));
-                    Auth_JWT.login(credentialResponse.credential);
+                    console.log(
+                      "Bearer credentialResponse.credential",
+                      "Bearer " + credentialResponse.credential
+                    );
+                    Auth_JWT.login("Bearer " + credentialResponse.credential);
                     handleSignUp_WithGoogle(
                       jwtDecode(credentialResponse.credential)
                     );
                     onClose();
-                    // window.location.reload();
-                    // console.log(
-                    //   "jwtDecode(credentialResponse.credential)",
-                    //   jwtDecode(credentialResponse.credential)
-                    // );
+                    window.location.reload();
                   }}
                   onError={() => {
                     console.log("Login Failed");
@@ -191,12 +225,12 @@ const LoginForm = ({ show, onClose }) => {
               {/* <i className="fa-brands fa-github"></i>
               </a> */}
               <a href="#" className="icon" style={{ border: "none" }}>
-                <img src={fb} style={{ width: "95%", height: "95%" }}></img>
+                <img src={fb} style={{ width: "70%", height: "70%" }}></img>
               </a>
               <a href="#" className="icon" style={{ border: "none" }}>
                 <img
                   src={github}
-                  style={{ width: "150%", height: "150%" }}
+                  style={{ width: "120%", height: "120%" }}
                 ></img>
               </a>
             </div>
@@ -206,6 +240,7 @@ const LoginForm = ({ show, onClose }) => {
               placeholder="Name"
               value={form.reg.Name}
               name="Name"
+              required
               onChange={(e) => handleChangeForm(e, "reg")}
             />
             <input
@@ -213,16 +248,43 @@ const LoginForm = ({ show, onClose }) => {
               placeholder="Email"
               value={form.reg.Email}
               name="Email"
+              required
               onChange={(e) => handleChangeForm(e, "reg")}
             />
             <input
-              type="password"
+              type={passwordType}
               placeholder="Password"
               value={form.reg.Password}
               name="Password"
+              required
+              pattern="[a-zA-Z0-9]{8,}"
+              title="密碼長度必須在7至24之間,且必須包含大小寫英文字母及數字"
               onChange={(e) => handleChangeForm(e, "reg")}
+              style={{ position: "relative" }}
             />
-            <button onClick={(e) => handleSignUp(e, "reg")}>註冊</button>
+            <p
+              style={{
+                position: "absolute",
+                top: "200px",
+                left: "150px",
+                cursor: "pointer",
+              }}
+              onClick={setPasswordType}
+            >
+              &theta;
+            </p>
+            {/* <button onClick={(e) => handleSignUp(e, "reg")}>註冊</button> */}
+            <ReCAPTCHA
+              sitekey="6LcQnP0pAAAAAC_HxGOpvj55aP6mBcxvMaRjV2Rz"
+              onChange={onChange}
+            />
+            <div
+              className="g-recaptcha"
+              data-sitekey="6LcQnP0pAAAAAC_HxGOpvj55aP6mBcxvMaRjV2Rz"
+              data-callback="onSubmit"
+              // data-action="submit"
+            ></div>
+            <button>註冊</button>
           </form>
         </div>
         <div className="form-container sign-in">
@@ -253,12 +315,12 @@ const LoginForm = ({ show, onClose }) => {
                 />
               </GoogleOAuthProvider>
               <a href="#" className="icon" style={{ border: "none" }}>
-                <img src={fb} style={{ width: "95%", height: "95%" }}></img>
+                <img src={fb} style={{ width: "70%", height: "70%" }}></img>
               </a>
               <a href="#" className="icon" style={{ border: "none" }}>
                 <img
                   src={github}
-                  style={{ width: "150%", height: "150%" }}
+                  style={{ width: "120%", height: "120%" }}
                 ></img>
               </a>
             </div>
@@ -271,7 +333,7 @@ const LoginForm = ({ show, onClose }) => {
               onChange={(e) => handleChangeForm(e, "sign")}
             />
             <input
-              type="password"
+              type={passwordType}
               placeholder="Password"
               value={form.sign.Password}
               name="Password"

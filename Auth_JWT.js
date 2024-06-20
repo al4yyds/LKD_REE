@@ -4,15 +4,15 @@ import { jwtDecode } from "jwt-decode";
 class AuthService {
   login(token) {
     const decoded = jwtDecode(token);
-    const currentDate = Date.now();
-    console.log(token);
-    localStorage.setItem("name", decoded.name);
-    localStorage.setItem("expire", currentDate + 2 * 60 * 60 * 1000);
+    // console.log(token);
+    localStorage.setItem("token", token);
+    // localStorage.setItem("name", decoded.name);
+    // localStorage.setItem("expire",decoded.exp);
   }
   registerAndLogin(data) {
-    const currentDate = Date.now();
-    localStorage.setItem("name", data.name);
-    localStorage.setItem("expire", currentDate + 2 * 60 * 60 * 1000);
+    localStorage.setItem("token", data);
+    // localStorage.setItem("name", data.name);
+    // localStorage.setItem("expire", data.exp);
   }
 
   logout() {
