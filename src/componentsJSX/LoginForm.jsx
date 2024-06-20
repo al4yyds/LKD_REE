@@ -9,6 +9,8 @@ import {
 } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import Auth_JWT from "../../Auth_JWT";
+import fb from "../assets/images/icons/fb.png";
+import github from "../assets/images/icons/github.png";
 
 const LoginForm = ({ show, onClose }) => {
   const [open, setOpen] = useState(false);
@@ -61,7 +63,9 @@ const LoginForm = ({ show, onClose }) => {
     setLoading(true);
     // 定義要發送的 GET 請求的 URL
     // https://localhost:7095/LogIn/pwdcheck/?email=shaw@gmail.com&password=Aa111111
-    const url = "https://localhost:7095/LogIn/pwdcheck";
+    //原本的
+    //const url = "https://localhost:7095/LogIn/pwdcheck";
+    const url = "https://localhost:7148/api/LoginJWT/Log-in";
 
     // 定義查詢參數
     const params = {
@@ -72,7 +76,8 @@ const LoginForm = ({ show, onClose }) => {
     // 發送 GET 請求並傳遞查詢參數
     axios
       .post(
-        `https://localhost:7095/LogIn/pwdcheck/?email=${form.sign.Email}&password=${form.sign.Password}`
+        `https://localhost:7148/api/LoginJWT/Log-in/?email=${form.sign.Email}&password=${form.sign.Password}`
+        //`https://localhost:7095/LogIn/pwdcheck/?email=${form.sign.Email}&password=${form.sign.Password}`
       )
       .then((response) => {
         Auth_JWT.login(response.data.token);
@@ -92,7 +97,8 @@ const LoginForm = ({ show, onClose }) => {
     e.preventDefault();
     // 定義要發送的 GET 請求的 URL
     // https://localhost:7095/LogIn/register
-    const url = "https://localhost:7095/LogIn/register";
+    //const url = "https://localhost:7095/LogIn/register";
+    const url = "https://localhost:7148/api/LoginJWT/sign-up";
 
     // 定義查詢參數
     const params = {
@@ -106,7 +112,8 @@ const LoginForm = ({ show, onClose }) => {
       .post(
         // url,
         // { param: params }
-        `https://localhost:7095/LogIn/register/?Username=${form.reg.Name}&Email=${form.reg.Email}&Password=${form.reg.Password}`
+        //`https://localhost:7095/LogIn/register/?Username=${form.reg.Name}&Email=${form.reg.Email}&Password=${form.reg.Password}`
+        `https://localhost:7148/api/LoginJWT/sign-up/Username=${form.reg.Name}&Email=${form.reg.Email}&Password=${form.reg.Password}?`
       )
       .then((response) => {
         // 處理成功的響應
@@ -127,7 +134,8 @@ const LoginForm = ({ show, onClose }) => {
       .post(
         // url,
         // { param: params }
-        `https://localhost:7095/LogIn/register/?Username=${data.name}&Email=${data.email}&Password=A_12345678a`
+        // `https://localhost:7095/LogIn/register/?Username=${data.name}&Email=${data.email}&Password=A_12345678a`
+        `https://localhost:7148/api/LoginJWT/sign-up/Username=${data.name}&Email=${data.email}&Password=A_12345678a`
       )
       .then((response) => {
         // 處理成功的響應
@@ -149,22 +157,47 @@ const LoginForm = ({ show, onClose }) => {
       <div className="container" id="container" ref={containerRef}>
         <div className="form-container sign-up">
           <form>
-            <h1>Create Account</h1>
+            <h1>建立帳號</h1>
             <div className="social-icons">
-              <a href="#" className="icon">
-                <i className="fa-brands fa-google-plus-g"></i>
-              </a>
-
+              <GoogleOAuthProvider clientId="191234775662-mda3goonrsk2g68bu3dknkpkgrh34431.apps.googleusercontent.com">
+                <GoogleLogin
+                  onSuccess={(credentialResponse) => {
+                    // setUser(jwtDecode(credentialResponse.credential));
+                    Auth_JWT.login(credentialResponse.credential);
+                    handleSignUp_WithGoogle(
+                      jwtDecode(credentialResponse.credential)
+                    );
+                    onClose();
+                    // window.location.reload();
+                    // console.log(
+                    //   "jwtDecode(credentialResponse.credential)",
+                    //   jwtDecode(credentialResponse.credential)
+                    // );
+                  }}
+                  onError={() => {
+                    console.log("Login Failed");
+                  }}
+                  cookiePolicy={"single_host_origin"}
+                  type="icon"
+                  shape="circle"
+                />
+              </GoogleOAuthProvider>
               {/* <a href="#" className="icon"> */}
               {/* <i className="fab fa-facebook-f"></i>
               <i className="fa fa-facebook-official" aria-hidden="true"></i> */}
               {/* <i class="fa-brands fa-facebook"></i> */}
               {/* </a> */}
-              <a href="#" className="icon">
-                <i className="fa-brands fa-github"></i>
+              {/* <a href="#" className="icon"> */}
+              {/* <i className="fa-brands fa-github"></i>
+              </a> */}
+              <a href="#" className="icon" style={{ border: "none" }}>
+                <img src={fb} style={{ width: "95%", height: "95%" }}></img>
               </a>
-              <a href="#" className="icon">
-                <i className="fa-brands fa-linkedin-in"></i>
+              <a href="#" className="icon" style={{ border: "none" }}>
+                <img
+                  src={github}
+                  style={{ width: "150%", height: "150%" }}
+                ></img>
               </a>
             </div>
             <span>或使用電子郵件註冊</span>
@@ -219,14 +252,14 @@ const LoginForm = ({ show, onClose }) => {
                   shape="circle"
                 />
               </GoogleOAuthProvider>
-              <a href="#" className="icon">
-                <i className="fa-brands fa-facebook-f"></i>
+              <a href="#" className="icon" style={{ border: "none" }}>
+                <img src={fb} style={{ width: "95%", height: "95%" }}></img>
               </a>
-              <a href="#" className="icon">
-                <i className="fa-brands fa-github"></i>
-              </a>
-              <a href="#" className="icon">
-                <i className="fa-brands fa-linkedin-in"></i>
+              <a href="#" className="icon" style={{ border: "none" }}>
+                <img
+                  src={github}
+                  style={{ width: "150%", height: "150%" }}
+                ></img>
               </a>
             </div>
             <span>或使用其他方式登入</span>
