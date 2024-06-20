@@ -1,13 +1,10 @@
-import FavoriteProducts from "../componentsJSX/FavoriteProducts";
 import Recommand from "../componentsJSX/Recommand";
-import Favorite2 from "../componentsJSX/Favorite2";
-import "./Favorite.scss";
+import Favorite99 from "../componentsJSX/Favorite99";
 
 const Favorite = () => {
   return (
     <div className="favorite-page">
-      <FavoriteProducts />
-      <Favorite2 />
+      <Favorite99 />
       <Recommand />
     </div>
   );

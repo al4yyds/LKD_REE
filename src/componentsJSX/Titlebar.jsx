@@ -57,15 +57,15 @@ const Titlebar = () => {
           <Link to="/cart">
             <button className="titlebar-button">購物車</button>
           </Link>
-          <Link to="/favorite">
-            <button className="titlebar-button">收藏</button>
-          </Link>
           <div className="recent-viewed-dropdown-container">
             <button className="titlebar-button" onClick={toggleRecentViewed}>
               最近逛過
             </button>
             {showRecentViewed && <RecentViewedDropdown />} {/* 展示下拉選單 */}
           </div>
+          <Link to="/favorite">
+            <button className="titlebar-button">收藏</button>
+          </Link>
           <button className="titlebar-button" onClick={handleOpenModal}>
             登入
           </button>
