@@ -79,7 +79,7 @@ const Titlebar = () => {
             <button className="titlebar-button">最近逛過</button>
           </Link>
           {isLogin ? (
-            <span style={{ color: "blue" }}>{isLogin}</span>
+            <span style={{ color: "#f48414" }}>{isLogin}</span>
           ) : (
             <button className="titlebar-button" onClick={handleOpenModal}>
               登入

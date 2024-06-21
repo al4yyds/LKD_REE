@@ -12,9 +12,11 @@ import Auth_JWT from "../../Auth_JWT";
 import fb from "../assets/images/icons/fb.png";
 import github from "../assets/images/icons/github.png";
 import ReCAPTCHA from "react-google-recaptcha";
+import eye from "../assets/images/icons/eye.jpg";
 
 const LoginForm = ({ show, onClose }) => {
   const [open, setOpen] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [form, setForm] = useState({
     reg: {
       Name: "",
@@ -53,11 +55,13 @@ const LoginForm = ({ show, onClose }) => {
   const handleRegisterClick = () => {
     containerRef.current.classList.add("active");
     setPasswordType_("password");
+    setErrorMsg("");
   };
 
   const handleLoginClick = () => {
     containerRef.current.classList.remove("active");
     setPasswordType_("password");
+    setErrorMsg("");
   };
 
   if (!show) {
@@ -66,28 +70,14 @@ const LoginForm = ({ show, onClose }) => {
   const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
-    // 定義要發送的 GET 請求的 URL
-    // https://localhost:7095/LogIn/pwdcheck/?email=shaw@gmail.com&password=Aa111111
-    //原本的
-    //const url = "https://localhost:7095/LogIn/pwdcheck";
-    const url = "https://localhost:7148/api/LoginJWT/Log-in";
-
-    // 定義查詢參數
     const params = {
       username: form.sign.Email,
       password: form.sign.Password,
     };
-
-    // 發送 GET 請求並傳遞查詢參數
     axios
-      .post(
-        `https://localhost:7148/api/LoginJWT/Log-in-Hash`,
-        params
-        //`https://localhost:7095/LogIn/pwdcheck/?email=${form.sign.Email}&password=${form.sign.Password}`
-      )
+      .post(`https://localhost:7148/api/LoginJWT/Log-in-Hash`, params)
       .then((response) => {
-        Auth_JWT.login(response.data.token);
-        // 處理成功的響應
+        Auth_JWT.login(response.data.token); //存到local storage
         console.log(response.data);
         setLoading(false);
         onClose(); //關閉視窗
@@ -95,6 +85,7 @@ const LoginForm = ({ show, onClose }) => {
         window.location.reload();
       })
       .catch((error) => {
+        setErrorMsg(error.response.data);
         // 處理錯誤
         console.error("發送請求時發生錯誤：", error);
       });
@@ -145,6 +136,7 @@ const LoginForm = ({ show, onClose }) => {
           });
       })
       .catch((error) => {
+        setErrorMsg(error.response.data);
         // 處理錯誤
         console.error("發送請求時發生錯誤：", error);
       });
@@ -181,7 +173,7 @@ const LoginForm = ({ show, onClose }) => {
       setPasswordType_("password");
     }
   };
-  const onChange = (value) => {
+  const onChange_recapcha = (value) => {
     console.log("Captcha value:", value);
   };
   console.log("loading", loading);
@@ -237,7 +229,7 @@ const LoginForm = ({ show, onClose }) => {
             <span>或使用電子郵件註冊</span>
             <input
               type="text"
-              placeholder="Name"
+              placeholder="使用者名稱" //長度至少為7
               value={form.reg.Name}
               name="Name"
               required
@@ -245,7 +237,7 @@ const LoginForm = ({ show, onClose }) => {
             />
             <input
               type="email"
-              placeholder="Email"
+              placeholder="電子郵件"
               value={form.reg.Email}
               name="Email"
               required
@@ -253,7 +245,7 @@ const LoginForm = ({ show, onClose }) => {
             />
             <input
               type={passwordType}
-              placeholder="Password"
+              placeholder="密碼"
               value={form.reg.Password}
               name="Password"
               required
@@ -262,7 +254,19 @@ const LoginForm = ({ show, onClose }) => {
               onChange={(e) => handleChangeForm(e, "reg")}
               style={{ position: "relative" }}
             />
-            <p
+            <img
+              src={eye}
+              style={{
+                position: "absolute",
+                top: "300px",
+                left: "370px",
+                cursor: "pointer",
+                width: "5%",
+                height: "5%",
+              }}
+              onClick={setPasswordType}
+            ></img>
+            {/* <p
               style={{
                 position: "absolute",
                 top: "200px",
@@ -272,11 +276,13 @@ const LoginForm = ({ show, onClose }) => {
               onClick={setPasswordType}
             >
               &theta;
-            </p>
+            </p> */}
+            <p style={{ color: "red" }}>{errorMsg}</p>
             {/* <button onClick={(e) => handleSignUp(e, "reg")}>註冊</button> */}
+
             <ReCAPTCHA
-              sitekey="6LcQnP0pAAAAAC_HxGOpvj55aP6mBcxvMaRjV2Rz"
-              onChange={onChange}
+              sitekey="6LccXv4pAAAAAL4FitpaQadeDDOWQF5IHxpr-MjP"
+              onChange={onChange_recapcha}
             />
             <div
               className="g-recaptcha"
@@ -295,16 +301,16 @@ const LoginForm = ({ show, onClose }) => {
                 <GoogleLogin
                   onSuccess={(credentialResponse) => {
                     // setUser(jwtDecode(credentialResponse.credential));
-                    Auth_JWT.login(credentialResponse.credential);
+                    console.log(
+                      "Bearer credentialResponse.credential",
+                      "Bearer " + credentialResponse.credential
+                    );
+                    Auth_JWT.login("Bearer " + credentialResponse.credential);
                     handleSignUp_WithGoogle(
                       jwtDecode(credentialResponse.credential)
                     );
                     onClose();
-                    // window.location.reload();
-                    // console.log(
-                    //   "jwtDecode(credentialResponse.credential)",
-                    //   jwtDecode(credentialResponse.credential)
-                    // );
+                    window.location.reload();
                   }}
                   onError={() => {
                     console.log("Login Failed");
@@ -327,18 +333,31 @@ const LoginForm = ({ show, onClose }) => {
             <span>或使用其他方式登入</span>
             <input
               type="email"
-              placeholder="Email"
+              placeholder="使用者名稱"
               value={form.sign.Email}
               name="Email"
               onChange={(e) => handleChangeForm(e, "sign")}
             />
             <input
               type={passwordType}
-              placeholder="Password"
+              placeholder="密碼"
               value={form.sign.Password}
               name="Password"
               onChange={(e) => handleChangeForm(e, "sign")}
             />
+            <img
+              src={eye}
+              style={{
+                position: "absolute",
+                top: "290px",
+                left: "370px",
+                cursor: "pointer",
+                width: "5%",
+                height: "5%",
+              }}
+              onClick={setPasswordType}
+            ></img>
+            <p style={{ color: "red" }}>{errorMsg}</p>
             <a href="#">忘記密碼?</a>
             <button onClick={(e) => handleLogin(e, "sign")}>
               {loading ? "登入中" : "登入"}
