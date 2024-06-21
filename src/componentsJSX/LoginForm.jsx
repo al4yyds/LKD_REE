@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./LoginForm.css";
 import axios from "axios";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -17,6 +17,7 @@ import eye from "../assets/images/icons/eye.jpg";
 const LoginForm = ({ show, onClose }) => {
   const [open, setOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [recapcha, setRecapcha] = useState("");
   const [form, setForm] = useState({
     reg: {
       Name: "",
@@ -139,7 +140,14 @@ const LoginForm = ({ show, onClose }) => {
         setErrorMsg(error.response.data);
         // 處理錯誤
         console.error("發送請求時發生錯誤：", error);
+      })
+      .finally(() => {
+        setRecapcha("");
       });
+  };
+  const handleNotCapchaSuccess = (e) => {
+    e.preventDefault();
+    setErrorMsg("想驗證你是否為機器人");
   };
   const handleSignUp_WithGoogle = (data) => {
     // 定義要發送的 GET 請求的 URL
@@ -174,15 +182,21 @@ const LoginForm = ({ show, onClose }) => {
     }
   };
   const onChange_recapcha = (value) => {
+    setRecapcha(value);
     console.log("Captcha value:", value);
   };
-  console.log("loading", loading);
+
+  console.log("setRecapcha", recapcha);
   return (
     <div className="login-form">
       <div className="modal-overlay" onClick={onClose}></div>
       <div className="container" id="container" ref={containerRef}>
         <div className="form-container sign-up">
-          <form onSubmit={(e) => handleSignUp(e, "reg")}>
+          <form
+            onSubmit={(e) => {
+              recapcha ? handleSignUp(e, "reg") : handleNotCapchaSuccess(e);
+            }}
+          >
             <h1>建立帳號</h1>
             <div className="social-icons">
               <GoogleOAuthProvider clientId="191234775662-mda3goonrsk2g68bu3dknkpkgrh34431.apps.googleusercontent.com">
