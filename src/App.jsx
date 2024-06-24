@@ -20,6 +20,7 @@ import { jwtDecode } from "jwt-decode";
 
 const App = () => {
   const [isLogin, setIsLogin] = useState(false);
+  const [showModal, setShowModal] = useState(false); // 添加狀態來控制模態框顯示
 
   useEffect(() => {
     const _token = localStorage.getItem("token")?.slice(7);
@@ -39,6 +40,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route element={<RootLayout />}>
+          Home
           <Route path="/" element={<Home />} />
           <Route
             path="/contact"

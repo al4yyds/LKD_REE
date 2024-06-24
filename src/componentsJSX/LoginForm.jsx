@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./LoginForm.css";
 import axios from "axios";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -13,6 +13,7 @@ import fb from "../assets/images/icons/fb.png";
 import github from "../assets/images/icons/github.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import eye from "../assets/images/icons/eye.jpg";
+import { ErrorMessage } from "formik";
 
 const LoginForm = ({ show, onClose }) => {
   const [open, setOpen] = useState(false);
@@ -150,16 +151,26 @@ const LoginForm = ({ show, onClose }) => {
     setErrorMsg("想驗證你是否為機器人");
   };
   const handleSignUp_WithGoogle = (data) => {
-    // 定義要發送的 GET 請求的 URL
+    ////////////////////////////////////////////////////////
+    const postData = {
+      Username: data.username,
+      Email: data.email,
+      Password: "A_12345678a",
+    };
 
-    // 發送 GET 請求並傳遞查詢參數
+    const url = "https://localhost:7148/api/LoginJWT/sign-up";
     axios
-      .post(
-        // url,
-        // { param: params }
-        // `https://localhost:7095/LogIn/register/?Username=${data.name}&Email=${data.email}&Password=A_12345678a`
-        `https://localhost:7148/api/LoginJWT/sign-up/Username=${data.name}&Email=${data.email}&Password=A_12345678a`
-      )
+      .post(url, postData)
+      ////////////////////////////////////////////////////////
+      // 定義要發送的 GET 請求的 URL
+      // 發送 GET 請求並傳遞查詢參數
+      // axios
+      //   .post(
+      //     // url,
+      //     // { param: params }
+      //     // `https://localhost:7095/LogIn/register/?Username=${data.name}&Email=${data.email}&Password=A_12345678a`
+      //     `https://localhost:7148/api/LoginJWT/sign-up/Username=${data.name}&Email=${data.email}&Password=A_12345678a`
+      //   )
       .then((response) => {
         // 處理成功的響應
         window.location.reload();
@@ -222,21 +233,13 @@ const LoginForm = ({ show, onClose }) => {
                   shape="circle"
                 />
               </GoogleOAuthProvider>
-              {/* <a href="#" className="icon"> */}
-              {/* <i className="fab fa-facebook-f"></i>
-              <i className="fa fa-facebook-official" aria-hidden="true"></i> */}
-              {/* <i class="fa-brands fa-facebook"></i> */}
-              {/* </a> */}
-              {/* <a href="#" className="icon"> */}
-              {/* <i className="fa-brands fa-github"></i>
-              </a> */}
               <a href="#" className="icon" style={{ border: "none" }}>
-                <img src={fb} style={{ width: "70%", height: "70%" }}></img>
+                <img src={fb} style={{ width: "95%", height: "95%" }}></img>
               </a>
               <a href="#" className="icon" style={{ border: "none" }}>
                 <img
                   src={github}
-                  style={{ width: "120%", height: "120%" }}
+                  style={{ width: "160%", height: "160%" }}
                 ></img>
               </a>
             </div>
@@ -249,6 +252,7 @@ const LoginForm = ({ show, onClose }) => {
               required
               onChange={(e) => handleChangeForm(e, "reg")}
             />
+
             <input
               type="email"
               placeholder="電子郵件"
@@ -257,6 +261,7 @@ const LoginForm = ({ show, onClose }) => {
               required
               onChange={(e) => handleChangeForm(e, "reg")}
             />
+
             <input
               type={passwordType}
               placeholder="密碼"
@@ -280,6 +285,7 @@ const LoginForm = ({ show, onClose }) => {
               }}
               onClick={setPasswordType}
             ></img>
+
             {/* <p
               style={{
                 position: "absolute",
@@ -291,7 +297,7 @@ const LoginForm = ({ show, onClose }) => {
             >
               &theta;
             </p> */}
-            <p style={{ color: "red" }}>{errorMsg}</p>
+            <p style={{ color: "red", margin: "15px" }}>{errorMsg}</p>
             {/* <button onClick={(e) => handleSignUp(e, "reg")}>註冊</button> */}
 
             <ReCAPTCHA
@@ -335,12 +341,12 @@ const LoginForm = ({ show, onClose }) => {
                 />
               </GoogleOAuthProvider>
               <a href="#" className="icon" style={{ border: "none" }}>
-                <img src={fb} style={{ width: "70%", height: "70%" }}></img>
+                <img src={fb} style={{ width: "95%", height: "95%" }}></img>
               </a>
               <a href="#" className="icon" style={{ border: "none" }}>
                 <img
                   src={github}
-                  style={{ width: "120%", height: "120%" }}
+                  style={{ width: "160%", height: "160%" }}
                 ></img>
               </a>
             </div>
